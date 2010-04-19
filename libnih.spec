@@ -12,7 +12,7 @@
 Summary:	Lightweight application development library
 Name:		libnih
 Version:	1.0.1
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Libraries
 URL:		https://launchpad.net/libnih/
@@ -25,6 +25,9 @@ BuildRequires:	expat-devel >= 1:2.0.0
 BuildRequires:	gettext >= 0.17
 BuildRequires:	libtool >= 2:2.2.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+# Filter GLIBC_PRIVATE Requires
+%define		_noautoreq	(GLIBC_PRIVATE)
 
 %description
 libnih is a small library for C application development containing
