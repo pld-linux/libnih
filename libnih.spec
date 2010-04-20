@@ -12,12 +12,13 @@
 Summary:	Lightweight application development library
 Name:		libnih
 Version:	1.0.1
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		Libraries
 URL:		https://launchpad.net/libnih/
 Source0:	http://launchpad.net/libnih/1.0/%{version}/+download/%{name}-%{version}.tar.gz
 # Source0-md5:	3e410e32a51b4e6124547c2ced308efc
+Patch0:		pkgconfig-libdir.patch
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	dbus-devel >= 1.2.16
@@ -49,6 +50,7 @@ developing applications that use libnih.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %{__aclocal} -I m4
