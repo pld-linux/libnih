@@ -11,13 +11,13 @@
 
 Summary:	Lightweight application development library
 Name:		libnih
-Version:	1.0.1
-Release:	3
+Version:	1.0.2
+Release:	1
 License:	GPL v2
 Group:		Libraries
 URL:		https://launchpad.net/libnih/
 Source0:	http://launchpad.net/libnih/1.0/%{version}/+download/%{name}-%{version}.tar.gz
-# Source0-md5:	3e410e32a51b4e6124547c2ced308efc
+# Source0-md5:	89bf20db4ff3f005cc37482a4f050650
 Patch0:		pkgconfig-libdir.patch
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
@@ -25,7 +25,11 @@ BuildRequires:	dbus-devel >= 1.2.16
 BuildRequires:	expat-devel >= 1:2.0.0
 BuildRequires:	gettext >= 0.17
 BuildRequires:	libtool >= 2:2.2.4
+BuildRequires:	pkgconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		specflags	-fstack-protector -fPIE
+%define		specldflags	-Wl,-z,now -pie
 
 # Filter GLIBC_PRIVATE Requires
 %define		_noautoreq	(GLIBC_PRIVATE)
@@ -53,10 +57,13 @@ developing applications that use libnih.
 %patch0 -p1
 
 %build
+%{__gettextize}
 %{__aclocal} -I m4
-%{__autoconf}
 %{__automake}
+%{__autoconf}
+%{__autoheader}
 %{__libtoolize}
+LDFLAGS="%{rpmldflags} %{specldflags}"
 %configure \
 	--disable-static \
 	--disable-rpath
