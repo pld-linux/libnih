@@ -24,6 +24,7 @@ BuildRequires:	automake >= 1:1.11
 BuildRequires:	dbus-devel >= 1.2.16
 BuildRequires:	expat-devel >= 1:2.0.0
 BuildRequires:	gettext >= 0.17
+BuildRequires:	gettext-devel
 BuildRequires:	libtool >= 2:2.2.4
 BuildRequires:	pkgconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -63,10 +64,14 @@ developing applications that use libnih.
 %{__autoconf}
 %{__autoheader}
 %{__libtoolize}
+
 LDFLAGS="%{rpmldflags} %{specldflags}"
 %configure \
 	--disable-static \
 	--disable-rpath
+
+# prevent make from re-running auto-tools and configure
+touch aclocal.m4 configure config.status Makefile.in Makefile config.h.in
 
 %{__make}
 
