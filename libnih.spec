@@ -26,7 +26,7 @@ BuildRequires:	expat-devel >= 1:2.0.0
 BuildRequires:	gettext >= 0.17
 BuildRequires:	gettext-devel
 BuildRequires:	libtool >= 2:2.2.4
-BuildRequires:	pkgconfig
+BuildRequires:	pkgconfig >= 0.22
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags	-fstack-protector -fPIE
