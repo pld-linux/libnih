@@ -12,7 +12,7 @@
 Summary:	Lightweight application development library
 Name:		libnih
 Version:	1.0.3
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Libraries
 URL:		https://launchpad.net/libnih/
