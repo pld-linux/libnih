@@ -24,7 +24,7 @@ BuildRequires:	automake >= 1:1.11
 BuildRequires:	dbus-devel >= 1.2.16
 BuildRequires:	expat-devel >= 1:2.0.0
 BuildRequires:	gettext >= 0.17
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 BuildRequires:	libtool >= 2:2.2.4
 BuildRequires:	pkgconfig >= 0.22
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
