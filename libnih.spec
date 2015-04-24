@@ -1,5 +1,4 @@
 # TODO
-# - check why make re-invokes configure again
 # - 1 test fails:
 #  BAD: wrong value for dbus_message_get_reply_serial (reply), expected 2 got 3
 #        at tests/test_dbus_message.c:149 (test_message_error).
@@ -7,32 +6,33 @@
 #  FAIL: test_dbus_message
 #
 # Conditional build:
+%bcond_without	static_libs	# static libraries
 %bcond_with	tests		# build without tests
 
 Summary:	Lightweight application development library
+Summary(pl.UTF-8):	Lekka biblioteka do tworzenia aplikacji
 Name:		libnih
 Version:	1.0.3
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		Libraries
-URL:		https://launchpad.net/libnih/
-Source0:	http://launchpad.net/libnih/1.0/%{version}/+download/%{name}-%{version}.tar.gz
+Source0:	https://launchpad.net/libnih/1.0/%{version}/+download/%{name}-%{version}.tar.gz
 # Source0-md5:	db7990ce55e01daffe19006524a1ccb0
 Patch0:		pkgconfig-libdir.patch
+URL:		https://launchpad.net/libnih/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	dbus-devel >= 1.2.16
 BuildRequires:	expat-devel >= 1:2.0.0
-BuildRequires:	gettext >= 0.17
-BuildRequires:	gettext-tools
+BuildRequires:	gettext-tools >= 0.17
 BuildRequires:	libtool >= 2:2.2.4
-BuildRequires:	pkgconfig >= 0.22
+BuildRequires:	pkgconfig >= 1:0.22
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags	-fstack-protector -fPIE
 %define		specldflags	-Wl,-z,now -pie
 
-# Filter GLIBC_PRIVATE Requires
+# Filter unsatisfied GLIBC_PRIVATE depenency (caused by using __abort_msg private symbol)
 %define		_noautoreq	(GLIBC_PRIVATE)
 
 %description
@@ -44,14 +44,41 @@ libnih is roughly equivalent to other C libraries such as glib, except
 that its focus is on a small size and intended for applications that
 sit very low in the software stack, especially outside of /usr.
 
+%description -l pl.UTF-8
+libnih to mała biblioteka do tworzenia aplikacji w C, zawierająca
+funkcje, które, wbrew nazwie, nie zostały zaimplementowane nigdzie
+indziej w zbiorze standardowych bibliotek.
+
+libnih jest w przybliżeniu odpowiednikiem innych bibliotek C, takich
+jak glib, ale skupia się na małym rozmiarze i jest przeznaczona dla
+aplikacji położonych nisko w programowym stosie, szczególnie poza
+/usr.
+
 %package devel
-Summary:	Development files for %{name}
+Summary:	Development files for NIH libraries
+Summary(pl.UTF-8):	Pliki programistyczne bibliotek NIH
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
-The libnih-devel package contains libraries and header files for
-developing applications that use libnih.
+The libnih-devel package contains the header files for developing
+applications that use libnih.
+
+%description devel -l pl.UTF-8
+Ten pakiet zawiera pliki nagłówkowe do tworzenia aplikacji
+wykorzystujących libnih.
+
+%package static
+Summary:	Static NIH libraries
+Summary(pl.UTF-8):	Statyczne biblioteki NIH
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description static
+Static NIH libraries.
+
+%description static -l pl.UTF-8
+Statyczne biblioteki NIH.
 
 %prep
 %setup -q
@@ -61,17 +88,15 @@ developing applications that use libnih.
 %{__gettextize}
 %{__libtoolize}
 %{__aclocal} -I m4
-%{__automake}
 %{__autoconf}
 %{__autoheader}
+%{__automake}
 
 LDFLAGS="%{rpmldflags} %{specldflags}"
 %configure \
-	--disable-static \
-	--disable-rpath
-
-# prevent make from re-running auto-tools and configure
-touch aclocal.m4 configure config.status Makefile.in Makefile config.h.in
+	--disable-rpath \
+	--disable-silent-rules \
+	%{!?with_static_libs:--disable-static}
 
 %{__make}
 
@@ -83,6 +108,9 @@ touch aclocal.m4 configure config.status Makefile.in Makefile config.h.in
 rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+# obsoleted by pkg-config
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/lib*.la
 
 # move to /%{_lib} for upstart
 install -d $RPM_BUILD_ROOT/%{_lib}
@@ -109,11 +137,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc HACKING TODO
 %attr(755,root,root) %{_bindir}/nih-dbus-tool
-%{_mandir}/man1/nih-dbus-tool.1*
-%{_libdir}/libnih.la
-%{_libdir}/libnih.so
-%{_libdir}/libnih-dbus.la
-%{_libdir}/libnih-dbus.so
+%attr(755,root,root) %{_libdir}/libnih.so
+%attr(755,root,root) %{_libdir}/libnih-dbus.so
 %{_includedir}/libnih.h
 %{_includedir}/libnih-dbus.h
 %{_includedir}/nih
@@ -121,3 +146,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/libnih.pc
 %{_pkgconfigdir}/libnih-dbus.pc
 %{_aclocaldir}/libnih.m4
+%{_mandir}/man1/nih-dbus-tool.1*
+
+%if %{with static_libs}
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libnih.a
+%{_libdir}/libnih-dbus.a
+%endif
