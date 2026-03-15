@@ -13,12 +13,13 @@ Summary:	Lightweight application development library
 Summary(pl.UTF-8):	Lekka biblioteka do tworzenia aplikacji
 Name:		libnih
 Version:	1.0.3
-Release:	3
+Release:	4
 License:	GPL v2
 Group:		Libraries
 Source0:	https://launchpad.net/libnih/1.0/%{version}/+download/%{name}-%{version}.tar.gz
 # Source0-md5:	db7990ce55e01daffe19006524a1ccb0
 Patch0:		pkgconfig-libdir.patch
+Patch1:		gcc10-fno-common.patch
 URL:		https://launchpad.net/libnih/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
@@ -83,6 +84,7 @@ Statyczne biblioteki NIH.
 %prep
 %setup -q
 %patch -P0 -p1
+%patch -P1 -p1
 
 %build
 %{__gettextize}

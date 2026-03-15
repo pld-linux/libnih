@@ -1,0 +1,11 @@
+--- libnih-1.0.3/nih-dbus-tool/output.h.orig	2009-06-23 02:32:48.000000000 +0000
++++ libnih-1.0.3/nih-dbus-tool/output.h	2024-01-01 00:00:00.000000000 +0000
+@@ -27,7 +27,7 @@
+
+ NIH_BEGIN_EXTERN
+
+-char *output_package;
++extern char *output_package;
+
+ int   output          (const char *source_path, int source_fd,
+ 		       const char *header_path, int header_fd,
